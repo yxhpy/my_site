@@ -52,7 +52,6 @@ class ArticleView(View):
             return HttpResponse('文章不见了！！！！！！', status=404)
 
 
-
 class RegisterView(View):
     def post(self, request):
         forms = RegisterForm(request.POST)
