@@ -1,0 +1,133 @@
+{% extends 'front/nav-base.html' %}
+{% block expand_css %}
+    <link rel="stylesheet" href="/static/front/css/user-manage.css" xmlns="http://www.w3.org/1999/html">
+{% endblock %}
+{% block context %}
+    <div class="container-fluid">
+        <ol class="breadcrumb">
+            <li><a href="{% url 'front:index' %}">主页</a></li>
+            <li>用户中心</li>
+        </ol>
+    </div>
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a href="#">{{ username }}</a>&nbsp;的<span class="glyphicon glyphicon-cog"></span>&nbsp;设置中心
+                </h4>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="list-group">
+                            <p class="list-group-item-heading text-center"><span class="glyphicon glyphicon-cog"></span>&nbsp;设置
+                            </p>
+                            <a href="#" class="list-group-item list-group-item-text" id="set-header"><span
+                                    class="glyphicon glyphicon-user"></span>&nbsp;修改头像</a>
+                            <a href="#" class="list-group-item" id="set-info"><span
+                                    class="glyphicon glyphicon-book"></span>&nbsp;个人资料</a>
+                            <a href="#" class="list-group-item" id="set-pass"><span
+                                    class="glyphicon glyphicon-pencil"></span>&nbsp;密码修改</a>
+                            <a href="#" class="list-group-item" id="set-article"><span
+                                    class="glyphicon glyphicon-edit"></span>&nbsp;个人文章</a>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h1 class="panel-title" id="panel-title">
+                                    <span class="glyphicon glyphicon-user"></span>&nbsp;修改头像
+                                </h1>
+                            </div>
+                            <div class="panel-body" id="panel-body-set-header">
+                                <div class="media">
+                                    <div class="media-left">
+                                        {% if user.extension.head_img %}
+                                            <a href="javascript:void(0)" onclick="choose_file()"><img
+                                                class="media-object img-header" src="{{user.extension.head_img.url}}" alt=""
+                                                id="view_img"></a>
+                                        {% else %}
+                                            <a href="javascript:void(0)" onclick="choose_file()"><img
+                                                class="media-object img-header" src="/media/header-img.jpeg" alt=""
+                                                id="view_img"></a>
+                                        {% endif %}
+                                    </div>
+                                    <div class="media-body">
+                                        <h4><a href="#">{{ username }}</a> 请先点击头像选择文件，再点击上传头像</h4>
+                                        <input type="file" name="head_img" id="head_img" class="hidden"
+                                               onchange="view_img()">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body hidden" id="panel-body-set-info">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="input-group">
+                                            <label for="set-username" class='control-label input-group-addon'>用户名</label>
+                                            <input type="text" placeholder="用户名" id="set-username" class="form-control">
+                                            <span class="input-group-btn">
+                                                <button onclick="set_username()" type="button" class="btn btn-default">修改</button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body hidden" id="panel-body-set-pass">
+                                <p>暂不提供密码修改，请记住您的密码</p>
+                            </div>
+                            <div class="panel-body hidden" id="panel-body-set-article">
+                                <ul class="list-unstyled">
+                                    {% for article in articles %}
+                                        <h4>{{ forloop.counter }}、<a href="{% url 'front:article'%}?article={{ article.id }}">{{ article.title }}</a></h4>
+                                        <small>&nbsp;发布于{{ article.create_time|date:'Y:m:d H-m-s' }}&nbsp;<span class="glyphicon glyphicon-eye-open"></span>{{ article.view_times }}</small>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+{% block expand_js %}
+    <script src="/static/front/js/user-manage.js"></script>
+    {% include 'model-base.html' %}
+    <script>
+        var csrfmiddlewaretoken = $('[name="csrfmiddlewaretoken"]').val()
+        function view_img() {
+            var formData = new FormData();
+            formData.append("photo", $("#head_img")[0].files[0]);
+            $.ajax({
+                url: "{% url 'front:uplaodImage'%}",
+                type:'post',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    $("#view_img").attr('src', data.url);
+                    show_info('成功', '更换成功' + data.url);
+                },
+                error:function (data) {
+                    console.log(data);
+                    show_info('失败', data.responseJSON.error.message);
+                }
+            })
+        }
+        function set_username() {
+                $.ajax({
+                    url: '{% url 'front:set' %}',
+                    method: 'post',
+                    data: {'re_username':$('#set-username').val(),
+                            'csrfmiddlewaretoken':csrfmiddlewaretoken},
+                    success:function (data) {
+                        show_info('成功', data.success);
+                    },
+                    error:function (error) {
+                        show_info('更改失败', error.responseJSON.error);
+                    },
+                })
+        }
+    </script>
+{% endblock %}

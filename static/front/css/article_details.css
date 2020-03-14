@@ -1,0 +1,50 @@
+@import "base.css";
+#panel-article-style{
+    box-shadow: 1px 1px 5px #888888;
+}
+.collect-style a:link,.collect-style a:visited{
+	color: #eb9316;
+	text-decoration: none;
+}
+.collect-style a:hover,.collect-style:active{
+	color: red;
+}
+.collected-style a:link,.collected-style a:visited{
+    color: red;
+	text-decoration: none;
+}
+.collected-style a:hover,.collected-style:active{
+	color: #eb9316;
+}
+.media-img{
+	width: 64px;
+	height: 64px;
+}
+.comment-like{
+	margin-top: 2px;
+	margin-right: 2px;
+}
+.comment-like:link,.comment-like:visited{
+
+}
+.comment-like:hover,.comment-like:active{
+	color: red;
+}
+.heart-style:link,.heart-style:visited{
+	color: #888888;
+	text-decoration: none;
+}
+.heart-style:hover,.heart-style:active{
+	color: red;
+}
+.star-style:link,.star-style:visited{
+	color: #888888;
+	text-decoration: none;
+}
+.star-style:hover,.star-style:active{
+	color: red;
+}
+.active-style:link,.active-style:visited,.active-style:hover,.active-style:active{
+	color: red;
+	text-decoration: none;
+}

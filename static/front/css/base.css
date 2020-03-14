@@ -1,0 +1,39 @@
+body { padding-top: 70px;
+
+}
+#brand-img-style{
+	width: 170px;
+}
+#brand-padding{
+	padding: 6px;
+}
+.nav-style{
+	border-bottom: 0;
+	box-shadow: 2px 2px 5px #888888;
+}
+.nav-active-style{
+	border-bottom: 3px solid red;
+}
+.sign-style{
+	margin-left: 3px;
+	margin-right: 3px;
+}
+.breadcrumb-style{
+	box-shadow: 2px 2px 5px #888888;
+}
+.return-top{
+	width: 40px;
+	height: 70px;
+	position: fixed;
+	bottom: 50px;
+	right: 100px;
+	background-color: #447e9b;
+}
+.return-top>a:link,.return-top>a:visited{
+	color: azure;
+	text-decoration: none;
+}
+.return-top>a:hover,.return-top>a:active{
+	color: red;
+	text-decoration: none;
+}

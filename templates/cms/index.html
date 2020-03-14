@@ -1,0 +1,123 @@
+{% extends 'cms/base.html' %}
+{% block contant %}
+    {% csrf_token %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <p><img id="img-head" class="img-circle img-responsive center-block"
+                                src="{{ user.extension.head_img.url }}" alt="" width="150"></p>
+                        <p class="text-center">{{ user.username }}</p>
+                    </div>
+                    <div class="list-group text-center">
+                        <div href="#" class="list-group-item-heading">数据管理</div>
+                        <a href="#" id="article_manage" class="list-group-item">文章管理</a>
+                        <a href="#" id="user_manage" class="list-group-item">账号管理</a>
+                        <a href="#" id="comment_manage" class="list-group-item">评论管理</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 id="manage_title"></h4>
+                        <small>您可以通过查找快速的找到你想要管理的对象</small>
+                    </div>
+                    <div class="panel-body">
+                        <div class="input-group">
+                            <input type="text" class="form-control">
+                            <span class=" input-group-btn">
+                                <button type="button" class="btn btn-default">
+                                <span class="glyphicon glyphicon-search"></span>
+                                &nbsp;搜索
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                    <table class="table" id="data_contant">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel"></div>
+
+{% endblock %}
+{% block js %}
+<script>
+        function manage(href) {
+            window.location.href = href;
+        }
+        $(function () {
+            $('#article_manage').click();
+        });
+        $('#user_manage').click(function () {
+            $clicked = $(this);
+            $('#manage_title').text('用户管理')
+            if (!$clicked.hasClass('active'))
+            {
+                var csrfmiddlewaretoken = $('[name="csrfmiddlewaretoken"]').val();
+                $.ajax({
+                url: "{% url 'cms:index'%}",
+                method: 'post',
+                data: {
+                    'manage_type': 'user',
+                    'csrfmiddlewaretoken': csrfmiddlewaretoken
+                },
+                success: function (data) {
+                    $data_content = $('#data_contant');
+                    $data_content.html(data);
+                    $clicked.siblings().removeClass('active');
+                    $clicked.addClass('active');
+                }
+                })
+            }
+        });
+        $('#article_manage').click(function () {
+            $clicked = $(this);
+            $('#manage_title').text('文章管理')
+            if (!$clicked.hasClass('active'))
+            {
+                var csrfmiddlewaretoken = $('[name="csrfmiddlewaretoken"]').val();
+                $.ajax({
+                url: "{% url 'cms:index'%}",
+                method: 'post',
+                data: {
+                    'manage_type': 'article',
+                    'csrfmiddlewaretoken': csrfmiddlewaretoken
+                },
+                success: function (data) {
+                    $data_content = $('#data_contant');
+                    $data_content.html(data);
+                    $clicked.siblings().removeClass('active');
+                    $clicked.addClass('active');
+                }
+                })
+            }
+        });
+        $('#comment_manage').click(function () {
+            $clicked = $(this);
+            $('#manage_title').text('评论管理');
+            if (!$clicked.hasClass('active'))
+            {
+                var csrfmiddlewaretoken = $('[name="csrfmiddlewaretoken"]').val();
+                $.ajax({
+                url: "{% url 'cms:index'%}",
+                method: 'post',
+                data: {
+                    'manage_type': 'comment',
+                    'csrfmiddlewaretoken': csrfmiddlewaretoken
+                },
+                success: function (data) {
+                    $data_content = $('#data_contant');
+                    $data_content.html(data);
+                    $clicked.siblings().removeClass('active');
+                    $clicked.addClass('active');
+                }
+                })
+            }
+        });
+
+    </script>
+{% endblock %}

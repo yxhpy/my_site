@@ -1,0 +1,217 @@
+{% extends 'front/nav-base.html' %}
+{% block expand_css %}
+    <link rel="stylesheet" type="text/css" href="/static/front/css/article_details.css">
+    <script src="/static/ckeditor/ckeditor.js"></script>
+{% endblock %}
+{% block context %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <ol class="breadcrumb breadcrumb-style">
+                    <li><a href="{% url 'front:index' %}">科技文章</a></li>
+                    <li class="active">{{ article.title }}</li>
+                </ol>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+
+            </div>
+            <div class="col-md-8" id="article-details">
+                <div class="panel panel-default" style="box-shadow: 1px 1px 5px #888888">
+                    <div class="panel-heading">
+                        <h4>{{ article.title }}</h4>
+                        <p>
+                            <small>
+                                {% csrf_token %}
+                                {{ article.tags|safe }}
+                                <span><a href="#">{{ article.auth.user.username }}</a></span>
+                                <span>{{ article.create_time|date:"文章于Y年m月d日H时i分发布" }}</span>
+                                <span>阅读数 {{ article.view_times }}</span>
+                                {% if collect %}
+                                     <span class="collected-style" id="collect"><a href="#" onclick="collect()"
+                                ><span
+                                        class="glyphicon glyphicon-star-empty"></span>收藏</a></span>
+                                    {% else %}
+                                    <span class="collect-style" id="collect"><a href="#" onclick="collect()"
+                                ><span
+                                        class="glyphicon glyphicon-star"></span>收藏</a></span>
+                                {% endif %}
+
+
+                            </small>
+                        </p>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12" id="article-style">
+                                {{ article.content|safe }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>如果你喜欢这篇文章您可以
+                            <a href="javascript:void (0);" onclick="likes()" class="heart-style {{ likes }}">点赞<span
+                                    class="glyphicon glyphicon-heart"></span></a>({{article.likes_set.count}})
+                            <a href="javascript:void (0);" class="share-style">转发<span
+                                    class="glyphicon glyphicon-share"></span></a> 和
+                            <a href="javascript:void (0);" onclick="collect()" class="star-style {{ collect }}">收藏<span
+                                    class="glyphicon glyphicon-star"></span></a>({{article.collect_set.count}})
+                            哦
+                        </h4>
+                    </div>
+                    <div class="panel-body">
+                        <form method="post" class="form-group">
+                            <div class="panel panel-default">
+                                {% if username %}
+                                    <div class="panel-body" id="body-ckeditor">
+                                        {% csrf_token %}
+                                        <label for="editor" class="form-group">写出你想要对作者说的话&nbsp;<span
+                                                class="glyphicon glyphicon-comment"></span></label>
+                                        {{ comment_form.media }}
+                                        <p>{{ comment_form }}</p>
+                                    </div>
+                                    <div class="panel-footer">
+                                        <button type="button" class="btn btn-default btn-group-lg"
+                                                onclick="comment()" data-toggle="tooltip" data-placement="left"
+                                                title="评论长度必须大于15">
+                                            评论
+                                        </button>
+                                    </div>
+                                {% else %}
+                                    <div class="panel-body">
+                                        <h4>请先 <a href="#login_model" data-toggle="modal">登录</a>再评论哦</h4>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4><span class="glyphicon glyphicon-comment"></span>&nbsp;评论</h4>
+                    </div>
+                    <div class="panel-body">
+                        {% if comments %}
+                            {% for comment in comments %}
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <div class="media">
+                                            <div class="media-left">
+                                                <a href="#">
+                                                    <img class="media-object media-img img-rounded" src="{{ comment.comment_user.head_img.url }}">
+                                                </a>
+                                            </div>
+                                            <div class="media-body">
+                                                <div class="media-heading">
+                                                    <p class="text-right"><span
+                                                            class="glyphicon glyphicon-heart-empty comment-like"></span>
+                                                    </p>
+                                                    <h3>来自---<small>{{ comment.comment_user.user.username }}</small>
+                                                    </h3>
+                                                </div>
+                                                <p>{{ comment.comment_content|safe }}</p>
+                                                <p class="text-right">
+                                                    <small>评论时间: {{ comment.create_time|date:'Y年m月d日 H点m分' }}</small>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <h4>还没人评论，快来占个
+                                <a href="javascript:void (0);" data-toggle="tooltip" data-placement="left"
+                                   title="请在上方评论！！！！！！">
+                                    <span class="glyphicon glyphicon-pencil"></span>沙发
+                                </a>吧！
+                            </h4>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block expand_js %}
+    <script src="/static/front/js/article_details.js"></script>
+    {% include 'model-base.html' %}
+    <script>
+        function re_load(){document.location.reload();}
+        function collect() {
+            var csrfmiddlewaretoken = $('[name="csrfmiddlewaretoken"]').val();
+            $.ajax({
+                url: '{% url "front:collect"%}',
+                method: 'post',
+                data: {
+                    'collect_id': '{{ article.pk }}',
+                    'csrfmiddlewaretoken': csrfmiddlewaretoken
+                },
+                success: function (data) {
+                    $('.star-style').toggleClass('active-style');
+                    show_info('成功', data.success);
+                    setInterval(re_load, 500);
+                },
+                error: function (data) {
+                    console.log(data.responseJSON.error);
+                    show_info('失败了', data.responseJSON.error);
+                }
+            })
+        }
+
+        function comment() {
+            var csrfmiddlewaretoken = $('[name="csrfmiddlewaretoken"]').val();
+            $.ajax({
+                url: '{% url "front:comment"%}',
+                method: 'post',
+                data: {
+                    'comment_id': '{{ article.pk }}',
+                    'comment_count': id_content.getContent(),
+                    'csrfmiddlewaretoken': csrfmiddlewaretoken
+                },
+                success: function (data) {
+                    show_info("成功!", data.success);
+                    setInterval(re_load, 500);
+
+                },
+                error: function (data) {
+                    show_info("错误!", data.responseJSON.error);
+                }
+            })
+        }
+
+        function likes() {
+            var csrfmiddlewaretoken = $('[name="csrfmiddlewaretoken"]').val();
+            $.ajax({
+                url: '{% url "front:like"%}',
+                method: 'post',
+                data: {
+                    'like_id': '{{ article.pk }}',
+                    'csrfmiddlewaretoken': csrfmiddlewaretoken
+                },
+                success: function (data) {
+                    show_info("成功!", data.success);
+                    $('.heart-style').toggleClass('active-style')
+                    setInterval(re_load, 500);
+
+                },
+                error: function (data) {
+                    show_info("错误!", data.responseJSON.error);
+                }
+            })
+        }
+    </script>
+    <script>
+        $('label[for="id_comment_content"]').text('');
+        $('[class="django-ckeditor-widget"]').removeAttr('style');
+    </script>
+{% endblock %}

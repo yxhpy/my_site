@@ -1,0 +1,52 @@
+{% extends 'cms/base.html' %}
+{% block contant %}
+    <div class="container-fluid">
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                <h4>正在管理{{ article_manage.title }}中...</h4>
+            </div>
+            <div class="body">
+                <form class="form-group" action="{% url 'cms:manage' %}" method="post">
+                    {% csrf_token %}
+                    <input type="text" class="hidden" name="pk" value="{{ user_manage.pk }}">
+                    <label for="">用户名</label>
+                    <input type="text" class="form-control" name="username" value="{{ user_manage.user.username }}">
+                    <label for="">邮箱</label>
+                    <input type="email" class="form-control" name="email" value="{{ user_manage.user.email }}">
+                    <p>
+                        <label for="">是否封禁</label>
+                        {% if user_manage.user.is_superuser %}
+                            <label for=""><input name="is_super" type="radio" class="form-inline" value="1" checked>是</label>
+                            <label for=""><input name="is_super" type="radio" class="form-inline" value="0">否</label>
+                            {% else %}
+                            <label for=""><input name="is_super" type="radio" class="form-inline" value="1">是</label>
+                            <label for=""><input name="is_super" type="radio" class="form-inline" value="0" checked>否</label>
+                        {% endif %}
+                    </p>
+                    <p>
+                        <label for="">是否可管理后台</label>
+                        {% if user_manage.user.is_staff %}
+                            <label for=""><input name="is_staff" type="radio" class="form-inline" value="1" checked>是</label>
+                            <label for=""><input name="is_staff" type="radio" class="form-inline" value="0">否</label>
+                            {% else %}
+                            <label for=""><input name="is_staff" type="radio" class="form-inline" value="1">是</label>
+                            <label for=""><input name="is_staff" type="radio" class="form-inline" value="0" checked>否</label>
+                        {% endif %}
+                    </p>
+
+                    <p>
+                        <label for="">是否激活</label>
+                        {% if user_manage.user.is_active %}
+                            <label for=""><input name="is_active" type="radio" class="form-inline" value="1" checked>是</label>
+                            <label for=""><input name="is_active" type="radio" class="form-inline" value="0">否</label>
+                            {% else %}
+                            <label for=""><input name="is_active" type="radio" class="form-inline" value="1">是</label>
+                            <label for=""><input name="is_active" type="radio" class="form-inline" value="0" checked>否</label>
+                        {% endif %}
+                    </p>
+                    <p><input type="submit" value="提交" class="btn btn-danger"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

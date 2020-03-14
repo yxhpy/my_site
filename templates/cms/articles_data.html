@@ -1,0 +1,26 @@
+<tr>
+    <th>主键</th>
+    <th>文章标题</th>
+    <th>文章作者</th>
+    <th>创建时间</th>
+    <th>最后修改时间</th>
+    <th>观看次数</th>
+    <th>是否封禁</th>
+    <th>管理</th>
+</tr>
+{% for article in articles %}
+    <tr>
+        <td>{{ article.pk }}</td>
+        <td>{{ article.title }}</td>
+        <td>{{ article.auth.user.username }}</td>
+        <td>{{ article.create_time }}</td>
+        <td>{{ article.end_set_time }}</td>
+        <td>{{ article.view_times }}</td>
+        <td>{{ article.is_active }}</td>
+        <td class="table-responsive">
+            <button class="btn btn-primary" onclick="manage('{% url 'cms:manage' %}?article_id={{ article.pk }}')">
+                <span class="glyphicon glyphicon-cog"></span>进入管理
+            </button>
+        </td>
+    </tr>
+{% endfor %}

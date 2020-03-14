@@ -1,0 +1,20 @@
+<tr>
+    <th>主键</th>
+    <th>评论人</th>
+    <th>评论时间</th>
+    <th>评论内容</th>
+    <th>管理</th>
+</tr>
+{% for comment in comments %}
+    <tr>
+        <td>{{ comment.pk }}</td>
+        <td>{{ comment.comment_user.user.username }}</td>
+        <td>{{ comment.create_time }}</td>
+        <td>{{ comment.comment_content }}</td>
+        <td class="table-responsive">
+            <button class="btn btn-primary" onclick="manage('{% url 'cms:manage' %}?comment_id={{ comment.pk }}')">
+                <span class="glyphicon glyphicon-cog"></span>进入管理
+            </button>
+        </td>
+    </tr>
+{% endfor %}

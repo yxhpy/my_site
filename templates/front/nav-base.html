@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    {{ ueditor.media }}
+    {% block expand_css %}
+
+    {% endblock %}
+</head>
+<body>
+{% csrf_token %}
+<nav class="navbar navbar-default navbar-fixed-top nav-style ">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="{% url 'front:index' %}" class="navbar-brand" id="brand-padding">
+                <img src="/media/logo.png" id="brand-img-style">
+            </a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <div class="container">
+                <ul class="nav navbar-nav">
+                    <li class="active nav-active-style"><a href="/">科技文章</a></li>
+                    <li><a href="#">电影赏析</a></li>
+                    <li><a href="#">软件分享</a></li>
+                    <li><a href="#">技术交流</a></li>
+                </ul>
+                <div class="navbar-form navbar-left">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for ...">
+                        <span class="input-group-btn">
+                        <button class="btn btn-default"><span class="glyphicon glyphicon-search"></span>搜索</button>
+                    </span>
+                    </div>
+                </div>
+                <div class="nav navbar-nav navbar-right">
+                    {% if username %}
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <span class="glyphicon glyphicon-user"></span>{{ username }}
+                                    <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{% url 'front:userManage' %}"><span
+                                            class="glyphicon glyphicon-sunglasses"></span>&nbsp;用户中心</a></li>
+                                    <li><a href="{% url 'front:posting' %}"><span
+                                            class="glyphicon glyphicon-book"></span>&nbsp;发帖</a></li>
+                                    <li><a href="#"><span class="glyphicon glyphicon-phone"></span>&nbsp;反馈意见</a>
+                                    </li>
+                                    <li><a href="#"><span class="glyphicon glyphicon-info-sign"></span>&nbsp;关于</a>
+                                    </li>
+                                    {% if is_staff %}
+                                    <li class="divider"></li>
+                                    <li><a href="{% url 'cms:index' %}"><span class="glyphicon glyphicon-info-sign"></span>&nbsp;管理后台</a>
+                                    </li>
+                                    {% endif %}
+                                    <li class="divider"></li>
+                                    <li><a href="{% url 'front:loginOut' %}"><span
+                                            class="glyphicon glyphicon-log-out"></span>&nbsp;退出登录</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    {% else %}
+                        <small class="navbar-text text-center sign-style"><a href="#login_model" class="navbar-link"
+                                                                             data-toggle="modal"><span
+                                class="glyphicon glyphicon-user"></span>&nbsp;登录</a></small>
+                        <small class="navbar-text text-center sign-style">|</small>
+                        <small class="navbar-text text-center sign-style"><a href="#register_model"
+                                                                             class="navbar-link"
+                                                                             data-toggle="modal"><span
+                                class="glyphicon glyphicon-log-in"></span>&nbsp;注册</a></small>
+                        <small class="navbar-text text-center sign-style">|</small>
+                        <small class="navbar-text text-center sign-style"><a href="#" class="navbar-link"><span
+                                class="glyphicon glyphicon-info-sign"></span>&nbsp;关于</a></small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+{% block context %}
+
+{% endblock %}
+{#登录模态框#}
+<div class="modal fade bs-example-modal-xs" tabindex="-1" role="dialog" id="login_model">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">登录账号</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="email_label">邮箱</label>
+                    <input type="email" name="email" class="form-control" placeholder="邮箱&hellip;"
+                           id="email_label">
+                    <span class="help-block"></span>
+                </div>
+                <div class="form-group">
+                    <label for="password_label">密码</label>
+                    <input type="password" name="password" class="form-control" placeholder="密码&hellip;"
+                           id="password_label">
+                    <span class="help-block"></span>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="login_button">登录</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{#注册模态框#}
+<div class="modal fade bs-example-modal-xs" tabindex="-1" role="dialog" id="register_model">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">注册账号</h4>
+            </div>
+            <div class="modal-body" id="reset-register-form">
+                <div class="form-group">
+                    <label for="r_username_label" class="control-label">用户名</label>
+                    <input type="text" name="username" class="form-control" placeholder="用户名&hellip;"
+                           id="r_username_label">
+                    <span class="help-block"></span>
+                </div>
+                <div class="form-group">
+                    <label for="r_email_label" class="control-label">邮箱</label>
+                    <input type="email" name="email" class="form-control" placeholder="邮箱&hellip;"
+                           id="r_email_label">
+                    <span class="help-block"></span>
+                </div>
+                <div class="form-group">
+                    <label for="r_password_label" class="control-label">密码</label>
+                    <input type="password" name="password" class="form-control" placeholder="密码&hellip;"
+                           id="r_password_label">
+                    <span class="help-block"></span>
+                </div>
+                <div class="form-group">
+                    <label for="r_re_password_label" class="control-label">重复密码</label>
+                    <input type="password" name="re_password" class="form-control" placeholder="密码&hellip;"
+                           id="r_re_password_label">
+                    <span class="help-block"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="register_button">注册</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div class="return-top text-center">
+    <a href="javascript:void(0);">
+        <div><span class="glyphicon glyphicon-chevron-up"></span></div>
+        <strong>返回</strong>
+        <strong>顶部</strong>
+    </a>
+</div>
+<script src="/static/jquery-3.4.1.min.js"></script>
+<script src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script src="/static/front/js/nav-base.js"></script>
+{% block expand_js %}
+
+{% endblock %}
+</body>
+</html>

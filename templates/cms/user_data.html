@@ -1,0 +1,30 @@
+<tr>
+    <th>序号</th>
+    <th>主键</th>
+    <th>用户名</th>
+    <th>注册时间</th>
+    <th>账号是否正常</th>
+    <th>邮箱</th>
+    <th>最后登录时间</th>
+    <th>是否是超级管理员</th>
+    <th>是否可进入后台</th>
+    <th>操作</th>
+</tr>
+{% for user in users %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ user.pk }}</td>
+        <td>{{ user.user.username }}</td>
+        <td>{{ user.user.date_joined }}</td>
+        <td>{{ user.user.is_active }}</td>
+        <td>{{ user.user.email }}</td>
+        <td>{{ user.user.last_login }}</td>
+        <td>{{ user.user.is_superuser }}</td>
+        <td>{{ user.user.is_staff }}</td>
+        <td class="table-responsive">
+            <button class="btn btn-primary" onclick="manage('{% url 'cms:manage' %}?user_id={{ user.pk }}')">
+                <span class="glyphicon glyphicon-cog"></span>进入管理
+            </button>
+        </td>
+    </tr>
+{% endfor %}

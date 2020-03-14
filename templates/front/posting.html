@@ -1,0 +1,72 @@
+{% extends 'front/nav-base.html' %}
+{% block expand_css %}
+    <link rel="stylesheet" href="/static/front/css/posting.css">
+    <script src="/static/ckeditor/ckeditor.js"></script>
+{% endblock %}
+{% block context %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h4><a href="#">{{ username }}</a> 欢迎发帖 <span class="label label-default">New</span></h4>
+                        <h1>我们为您开放基本所有的样式</h1>
+                        <form method="post" class="form-group">
+                            {% csrf_token %}
+                            <label for="article_title">文章标题</label>
+                            <input type="text" name="article_title" id="article_title">
+                            <div class="form-group">
+                                <input type="radio" name="article_tags" id="tag1" value="原创" checked>
+                                <label for="tag1">原创</label>
+                                <small style="color: red">如果您是转载他人的请标明出处，否则删帖</small>
+                            </div>
+                            <div  class="form-group">
+                                <input type="radio"  name="article_tags" id="tag2" value="转">
+                                <label for="tag2">转载自</label>
+                                <input type="text" name="share_url">
+                            </div>
+                            <div>{{ ueditor }}</div>
+                        </form>
+                    </div>
+                    <div class="panel-footer">
+                        <button type="button" class="btn btn-default" onclick="posting();">发布文章</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block expand_js %}
+    {% include 'model-base.html' %}
+    <script src="/static/front/js/posting.js"></script>
+    <script>
+        function posting() {
+            var csrfmiddlewaretoken = $('[name="csrfmiddlewaretoken"]').val();
+            var article_title = $('input#article_title').val();
+            var article_content = id_content.getContent();
+            var share_url;
+            if(document.getElementById('tag2').checked){
+                share_url = $('[name="share_url"]').val();
+                if (share_url.length===0)
+                {show_info('错误', '如果选择转载，请填写转载网站');return;}
+            }
+            console.log(article_title);
+            $.ajax({
+                url: '{% url "front:posting"%}',
+                method: 'post',
+                data: {
+                    'share_url':share_url,
+                    'article_title':article_title,
+                    'content':article_content,
+                    'csrfmiddlewaretoken': csrfmiddlewaretoken
+                },
+                success: function (data) {
+                    window.location.href = {% url 'front:article'%}+"?article="+data.id
+                },
+                error: function (data) {
+                    show_info('失败', data.responseJSON.error);
+                }
+            })
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,27 @@
+@import "base.css";
+.head-img-style{
+	width: 64px;
+	height: 64px;
+	border: 2px solid #0f0f0f;
+}
+.head-img-small-style{
+	width: 32px;
+	height: 32px;
+	border: 1px solid #0f0f0f;
+}
+.article-cover{
+	padding-top: 20px;
+	box-shadow: 2px 2px 5px #888888;
+}
+#carousel-example-generic{
+	margin-bottom: 10px;
+	box-shadow: 1px 1px 5px #888888;
+}
+
+.panel-style-left{
+	border-left: 3px solid red
+}
+
+.article-heading-border{
+	border-left: 3px solid blue;
+}
